@@ -26,8 +26,8 @@
 			<div class="row border-bottom mb-5">
 				<div class="col-md-6">
 					<img th:src="@{'/images/' + ${product.images[0].imgLink}}"
-						alt="Hình ảnh sản phẩm" class="img-fluid product-image w-100 h-75" />
-						<input type="hidden" name="imgLink"
+						alt="Hình ảnh sản phẩm" class="img-fluid product-image w-100 h-100" />
+					<input type="hidden" name="imgLink"
 						th:value="${product.images[0].imgLink}" />
 				</div>
 				<div class="col-md-6">
@@ -47,20 +47,22 @@
 							<!-- Show new price if the product has a discount -->
 							<span th:if="${isOnDiscount}" class="discounted-price"
 								th:text="${#numbers.formatDecimal(discountedPrice, 0, 'COMMA', 0, 'POINT') + ' đ'}"
-								style="color: #ff0000; font-weight: bold;">Giá mới</span>
-							<span th:unless="${isOnDiscount}"
+								style="color: #ff0000; font-weight: bold;">Giá mới</span> <span
+								th:unless="${isOnDiscount}"
 								th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT') + ' đ'}">Giá</span>
 						</p>
 					</div>
 					<div class="mb-3">
-					    <div th:each="color : ${product.color}" class="color-swatch-container">
-					        <div class="color-swatch" th:attr="data-color=${color}"></div>
-					        <span class="color-name" th:text="${color}"></span>
-					    </div>
+						<div th:each="color : ${product.color}"
+							class="color-swatch-container">
+							<div class="color-swatch" th:attr="data-color=${color}"></div>
+							<span class="color-name" th:text="${color}"></span>
+						</div>
 					</div>
-	                <div class="mb-3">
-	                    <a th:each="size : ${product.size}" class="btn btn-outline-secondary size-btn" th:text="${size}">Size</a>
-	                </div>
+					<div class="mb-3">
+						<a th:each="size : ${product.size}"
+							class="btn btn-outline-secondary size-btn" th:text="${size}">Size</a>
+					</div>
 					<!-- Hidden input to send product price (if there is a discount, send a new price) -->
 					<input type="hidden" name="price"
 						th:value="${isOnDiscount} ? ${discountedPrice} : ${product.price}" />
@@ -90,19 +92,16 @@
 					<button type="submit" name="action" th:value="buy"
 						class="btn btn-success btn-lg btn-block buy-now" value="buyNow">Mua
 						ngay</button>
+					<div class="col-12 mt-5">
+						<h2>Mô tả sản phẩm</h2>
+						<p th:text="${product.description}">Mô tả sản phẩm</p>
+					</div>
 				</div>
 			</div>
 		</form>
-    
-		<div class="row mb-4">
-			<div class="col-md-12">
-				<h2>Mô tả sản phẩm</h2>
-				<p th:text="${product.description}">Mô tả sản phẩm</p>
-			</div>
-		</div>
 
 		<div class="row mb-4">
-			<div class="col-9">
+			<div class="col-5">
 				<h2>Thông số kỹ thuật</h2>
 				<table class="table table-bordered specs-table">
 					<tbody>
@@ -118,86 +117,79 @@
 						</tr>
 					</tbody>
 				</table>
-				<div class="row mb-4">
-					<div class="col-12">
-						<h2>Hướng dẫn chọn size</h2>
-						<table class="table table-bordered">
-							<thead>
-								<tr>
-									<th>Size</th>
-									<th>Chiều cao (cm)</th>
-									<th>Cân nặng (kg)</th>
-									<th>Vòng ngực (cm)</th>
-									<th>Vòng hông (cm)</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td>S</td>
-									<td>160-165</td>
-									<td>50-55</td>
-									<td>88-92</td>
-									<td>58-62</td>
-								</tr>
-								<tr>
-									<td>M</td>
-									<td>165-170</td>
-									<td>55-60</td>
-									<td>92-96</td>
-									<td>62-66</td>
-								</tr>
-								<tr>
-									<td>L</td>
-									<td>170-175</td>
-									<td>60-65</td>
-									<td>96-100</td>
-									<td>66-70</td>
-								</tr>
-								<tr>
-									<td>XL</td>
-									<td>175-180</td>
-									<td>65-70</td>
-									<td>100-104</td>
-									<td>70-74</td>
-								</tr>
-								<tr>
-									<td>XXL</td>
-									<td>180-185</td>
-									<td>70-75</td>
-									<td>104-108</td>
-									<td>74-78</td>
-								</tr>
-								<tr>
-									<td>XXXL</td>
-									<td>185-190</td>
-									<td>75-80</td>
-									<td>108-112</td>
-									<td>78-82</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-				</div>
-				<div class="row mb-4">
-					<div class="col-12">
-						<h2>Hướng dẫn bảo quản</h2>
-						<ul>
-							<li>Giặt máy ở chế độ nhẹ nhàng với nước lạnh hoặc ấm (không
-								quá 30°C)</li>
-							<li>Nên lộn trái áo khi giặt để bảo vệ bề mặt vải</li>
-							<li>Không sử dụng chất tẩy hoặc thuốc tẩy</li>
-							<li>Phơi trong bóng râm, tránh ánh nắng trực tiếp</li>
-							<li>Ủi ở nhiệt độ thấp (dưới 150°C) nếu cần thiết</li>
-							<li>Không giặt khô</li>
-						</ul>
-					</div>
-				</div>
+				<h2>Hướng dẫn bảo quản</h2>
+				<ul>
+					<li>Giặt máy ở chế độ nhẹ nhàng với nước lạnh hoặc ấm (không
+						quá 30°C)</li>
+					<li>Nên lộn trái áo khi giặt để bảo vệ bề mặt vải</li>
+					<li>Không sử dụng chất tẩy hoặc thuốc tẩy</li>
+					<li>Phơi trong bóng râm, tránh ánh nắng trực tiếp</li>
+					<li>Ủi ở nhiệt độ thấp (dưới 150°C) nếu cần thiết</li>
+					<li>Không giặt khô</li>
+				</ul>
+			</div>
+			<div class="col-7">
+				<h2>Hướng dẫn chọn size</h2>
+				<table class="table table-bordered">
+					<thead>
+						<tr>
+							<th>Size</th>
+							<th>Chiều cao (cm)</th>
+							<th>Cân nặng (kg)</th>
+							<th>Vòng ngực (cm)</th>
+							<th>Vòng hông (cm)</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>S</td>
+							<td>160-165</td>
+							<td>50-55</td>
+							<td>88-92</td>
+							<td>58-62</td>
+						</tr>
+						<tr>
+							<td>M</td>
+							<td>165-170</td>
+							<td>55-60</td>
+							<td>92-96</td>
+							<td>62-66</td>
+						</tr>
+						<tr>
+							<td>L</td>
+							<td>170-175</td>
+							<td>60-65</td>
+							<td>96-100</td>
+							<td>66-70</td>
+						</tr>
+						<tr>
+							<td>XL</td>
+							<td>175-180</td>
+							<td>65-70</td>
+							<td>100-104</td>
+							<td>70-74</td>
+						</tr>
+						<tr>
+							<td>XXL</td>
+							<td>180-185</td>
+							<td>70-75</td>
+							<td>104-108</td>
+							<td>74-78</td>
+						</tr>
+						<tr>
+							<td>XXXL</td>
+							<td>185-190</td>
+							<td>75-80</td>
+							<td>108-112</td>
+							<td>78-82</td>
+						</tr>
+					</tbody>
+				</table>
 			</div>
 		</div>
-
 	</div>
 	<!-- Footer Start -->
-  <div th:replace="~{/fragment/footer :: footer}"></div>
+	<div th:replace="~{/fragment/footer :: footer}"></div>
 	<!-- Footer End -->
 	<!-- Bootstrap JS and dependencies -->
 	<script th:src="@{/js/jquery-3.7.1.js}"></script>
