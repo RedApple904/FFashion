@@ -4,7 +4,6 @@
 package fashion.mock.service;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -32,9 +31,9 @@ public class OrderService {
         this.transactionHistoryRepository = transactionHistoryRepository;
     }
 
-    public List<Order> getAllOrders() {
-        return orderRepository.findAll();
-    }
+//    public List<Order> getAllOrders() {
+//        return orderRepository.findAll();
+//    }
 
     public Optional<Order> getOrderById(Long id) {
         return orderRepository.findById(id);
@@ -51,7 +50,6 @@ public class OrderService {
     /**
      * @author Duong Van Luc 01/07/2000
      */
-
     public void updateOrderStatus(Long id, String status) {
         Order order = orderRepository.findById(id).orElseThrow(() -> new RuntimeException("Order not found"));
 
