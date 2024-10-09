@@ -24,10 +24,6 @@ public class CheckoutService {
 		this.transactionHistoryRepository = transactionHistoryRepository;
 	}
 
-	public List<Payment> getAllPayments() {
-		return checkoutRepository.findAll();
-	}
-
 	// Method to retrieve only "Hoạt động" (Active) payments
 	public List<Payment> getAllPaymentsAvailable() {
 		return checkoutRepository.findByStatus("Hoạt động");
