@@ -1,5 +1,6 @@
 package fashion.mock.model;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +22,9 @@ import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "PRODUCT")
-public class Product {
+public class Product implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

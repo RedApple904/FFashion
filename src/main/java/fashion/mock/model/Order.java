@@ -1,5 +1,6 @@
 package fashion.mock.model;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -16,7 +17,9 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "ORDERS")
-public class Order {
+public class Order implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,6 +38,10 @@ public class Order {
 	@Column(name = "totalPrice", nullable = false)
 	private Double totalPrice;
 
+	// New field to store the received address
+	@Column(name = "receiveAddress", nullable = false, columnDefinition = "NVARCHAR(255)")
+	private String receiveAddress;
+
 	@Column(columnDefinition = "NVARCHAR(255)")
 	private String status;
 
@@ -47,17 +54,27 @@ public class Order {
 	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
 	private List<OrderDetail> orderDetails;
 
-	public Order(Long id, User user, LocalDate orderDate, Double shippingPrice, Double totalPrice, String status,
-			LocalDate updatedDate, List<TransactionHistory> transactionHistories, List<OrderDetail> orderDetails) {
+	public Order(Long id, User user, LocalDate orderDate, Double shippingPrice, Double totalPrice,
+			String receiveAddress, String status, LocalDate updatedDate, List<TransactionHistory> transactionHistories,
+			List<OrderDetail> orderDetails) {
 		this.id = id;
 		this.user = user;
 		this.orderDate = orderDate;
 		this.shippingPrice = shippingPrice;
 		this.totalPrice = totalPrice;
+		this.receiveAddress = receiveAddress;
 		this.status = status;
 		this.updatedDate = updatedDate;
 		this.transactionHistories = transactionHistories;
 		this.orderDetails = orderDetails;
+	}
+
+	public String getReceiveAddress() {
+		return receiveAddress;
+	}
+
+	public void setReceiveAddress(String receiveAddress) {
+		this.receiveAddress = receiveAddress;
 	}
 
 	public Order() {

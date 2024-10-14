@@ -90,7 +90,9 @@ public CheckoutController(ShoppingCartUtils shoppingCartUtils, CheckoutService c
 	}
 
 	@PostMapping("/submit")
-	public String submitCheckout(@RequestParam String paymentMethod, @RequestParam String shippingMethod,
+	public String submitCheckout(@RequestParam String paymentMethod, 
+			@RequestParam String shippingMethod,
+			@RequestParam String receiveAddress,
 			HttpSession session, Model model) {
 
 		User user = (User) session.getAttribute("user");
@@ -115,6 +117,8 @@ public CheckoutController(ShoppingCartUtils shoppingCartUtils, CheckoutService c
 		order.setTotalPrice(totalPriceWithShipping);
 		order.setStatus("Chờ phê duyệt"); // Change status according to payment method
 		order.setUpdatedDate(LocalDate.now());
+		order.setReceiveAddress(receiveAddress); // Save the receive address to the order
+		
 		Order savedOrder = orderService.saveOrder(order);
 
 		// Save each item as an OrderDetail

@@ -3,7 +3,6 @@
  */
 package fashion.mock.controller;
 
-import org.apache.tomcat.websocket.AuthenticationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,49 +19,48 @@ import jakarta.servlet.http.HttpSession;
 @RequestMapping("/login")
 public class AuthController {
 
-    private final UserService userService;
-    private final BCryptPasswordUtility bCryptPasswordUtility;
+	private final UserService userService;
+	private final BCryptPasswordUtility bCryptPasswordUtility;
 
-    
-
-    public AuthController(UserService userService, BCryptPasswordUtility bCryptPasswordUtility) {
-		super();
+	public AuthController(UserService userService, BCryptPasswordUtility bCryptPasswordUtility) {
 		this.userService = userService;
 		this.bCryptPasswordUtility = bCryptPasswordUtility;
 	}
 
 	@GetMapping("/loginform")
-    public String login(Model model){
-        model.addAttribute("user", new User());
-        return "login";
-    }
+	public String login(Model model) {
+		model.addAttribute("user", new User());
+		return "login";
+	}
 
-    @PostMapping("/loginsuccess")
-    public String loginSuccess(@ModelAttribute User user, Model model, HttpSession session) throws AuthenticationException {
-    	
-    	User userFromDB = userService.findUserByEmail(user.getEmail());
-    	if(!userService.getEmail(user.getEmail())){
-            model.addAttribute("errorEmail", "Email chưa được đăng ký!");
-            return "login";
-        }
-        
-        if(!bCryptPasswordUtility.doPasswordMatch(user.getPassword(), userFromDB.getPassword())){
-            model.addAttribute("errorPassword", "Mật khẩu không chính xác!");
-            return "login";
-        }
+	@PostMapping("/loginsuccess")
+	public String loginSuccess(@ModelAttribute User user, Model model, HttpSession session) {
 
-        if(userFromDB.getStatus() == null || !userFromDB.getStatus().equalsIgnoreCase("ACTIVE")){
-            model.addAttribute("errorStatus", "Tài khoản này chưa được active!");
-            return "login";
-        }
-        session.setAttribute("user", userFromDB);
-        return "redirect:/home";
-    }
+		User userFromDB = userService.findUserByEmail(user.getEmail());
+		
+		if (!userService.getEmail(user.getEmail())) {
+			model.addAttribute("errorEmail", "Email chưa được đăng ký!");
+			return "login";
+		}
 
-    @PostMapping("/logout")
-    public String logout(HttpSession session){
-        session.removeAttribute("user");
-        return "redirect:/home";
-    }
+		boolean checkPassword = !bCryptPasswordUtility.doPasswordMatch(user.getPassword(), userFromDB.getPassword());
+		if (checkPassword) {
+			model.addAttribute("errorPassword", "Mật khẩu không chính xác!");
+			return "login";
+		}
+
+		if (userFromDB.getStatus() == null || !userFromDB.getStatus().equalsIgnoreCase("ACTIVE")) {
+			model.addAttribute("errorStatus", "Tài khoản này chưa được active!");
+			return "login";
+		}
+		session.setAttribute("user", userFromDB);
+		return "redirect:/home";
+	}
+
+	@PostMapping("/logout")
+	public String logout(HttpSession session) {
+		session.removeAttribute("user");
+		return "redirect:/home";
+	}
 
 }

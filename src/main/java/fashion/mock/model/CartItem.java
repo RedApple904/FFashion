@@ -3,9 +3,13 @@
  */
 package fashion.mock.model;
 
+import java.io.Serializable;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class CartItem {
+public class CartItem implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	@JsonProperty("productId")
 	private Long productID;
@@ -29,7 +33,7 @@ public class CartItem {
 		this.size = size;
 		this.quantity = quantity;
 	}
-  
+
 	public Long getProductID() {
 		return productID;
 	}

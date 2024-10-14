@@ -6,7 +6,6 @@ package fashion.mock.controller;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,14 +18,12 @@ import fashion.mock.model.Order;
 import fashion.mock.model.User;
 import fashion.mock.service.OrderService;
 import fashion.mock.service.UserService;
-import fashion.mock.util.ShoppingCartUtils;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/order")
 public class OrderController {
 
-    @Autowired
     private final OrderService orderService;
     private final UserService userService;
 
@@ -50,7 +47,6 @@ public class OrderController {
     public String getAllOrders(HttpSession session, @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size, @RequestParam(required = false) Long searchTerm, Model model,
             RedirectAttributes redirectAttributes) {
-//        User user = (User) session.getAttribute("user");
         
         if (!checkAdminAccess(session, model, redirectAttributes)) {
             return "403";
@@ -58,7 +54,6 @@ public class OrderController {
 
         Pageable pageable = PageRequest.of(page, size);
         Page<Order> orderPage;
-//        Page<Order> orderPage = orderService.getOrdersWithPagination(pageable);
         if (searchTerm != null) {
             orderPage = orderService.findById(searchTerm, pageable);
         } else {

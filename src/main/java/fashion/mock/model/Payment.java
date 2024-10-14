@@ -1,5 +1,6 @@
 package fashion.mock.model;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -14,7 +15,9 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "PAYMENT")
-public class Payment {
+public class Payment implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
