@@ -41,32 +41,36 @@ public class UserService {
 		this.passwordEncoder = passwordEncoder;
 		this.bCryptPasswordEncoder = new BCryptPasswordEncoder();
 	}
-  /**
- * Trần Thảo
- */
-    public boolean getEmail (String email){
-        return userRepository.existsByEmail(email);
-    }
-    public User findUserByEmail(String email) {
-    	return userRepository.findUserByEmail(email);
-    }
-    public boolean getPassword (String password)  {
-        return userRepository.existsByPassword(password);
-    }
-    public User getStatus(String email){
-        return userRepository.findUserByEmail(email);
-    }
-    
-    public boolean isAdmin(Long userId){
-        List<UserRole> userRoles = userRoleRepository.findByUserId(userId);
-        for (UserRole userRole: userRoles) {
-            if(userRole.getRole().getRole().equalsIgnoreCase("ADMIN")){
-                return true;
-            }
-        }
-        return false;
-    }
-    
+
+	/**
+	 * Trần Thảo
+	 */
+	public boolean getEmail(String email) {
+		return userRepository.existsByEmail(email);
+	}
+
+	public User findUserByEmail(String email) {
+		return userRepository.findUserByEmail(email);
+	}
+
+	public boolean getPassword(String password) {
+		return userRepository.existsByPassword(password);
+	}
+
+	public User getStatus(String email) {
+		return userRepository.findUserByEmail(email);
+	}
+
+	public boolean isAdmin(Long userId) {
+		List<UserRole> userRoles = userRoleRepository.findByUserId(userId);
+		for (UserRole userRole : userRoles) {
+			if (userRole.getRole().getRole().equalsIgnoreCase("ADMIN")) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	/**
 	 * Author: Nguyễn Viết Hoàng Phúc 22/11/1997
 	 */
@@ -77,14 +81,14 @@ public class UserService {
 		user.setPassword(encoderPassword);
 		return userRepository.save(user);
 	}
-	
+
 	/**
 	 * Author: Nguyễn Viết Hoàng Phúc 22/11/1997
 	 */
 	public User getByEmail(String email) {
 		return userRepository.getUserByEmail(email);
 	}
-	
+
 	/**
 	 * Author: Nguyễn Viết Hoàng Phúc 22/11/1997
 	 */
@@ -106,7 +110,7 @@ public class UserService {
 		user.setPassword(bCryptPasswordEncoder.encode(password)); // Mã hóa mật khẩu trước khi lưu
 		return userRepository.save(user); // Lưu lại thông tin người dùng sau khi cập nhật mật khẩu
 	}
-	
+
 	/**
 	 * Author: Nguyễn Viết Hoàng Phúc 22/11/1997
 	 */
@@ -117,94 +121,88 @@ public class UserService {
 	/**
 	 * Author: Ngô Văn Quốc Thắng 11/05/1996
 	 */
-	 @Transactional
-	    public User addUserWithRoles(User user, List<Long> roleIds) {
-	        validateUser(user, roleIds);
-	        user.setPassword(passwordEncoder.encode(user.getPassword()));
-	        user.setCreatedDate(LocalDate.now());
-	        User savedUser = userRepository.save(user);
+	@Transactional
+	public User addUserWithRoles(User user, List<Long> roleIds) {
+		validateUser(user, roleIds);
+		user.setPassword(passwordEncoder.encode(user.getPassword()));
+		user.setCreatedDate(LocalDate.now());
+		User savedUser = userRepository.save(user);
 
-	        List<Role> roles = roleRepository.findAllById(roleIds);
-	        List<UserRole> userRoles = roles.stream()
-	                .map(role -> new UserRole(savedUser, role))
-	                .collect(Collectors.toList());
-	        userRoleRepository.saveAll(userRoles);
+		List<Role> roles = roleRepository.findAllById(roleIds);
+		List<UserRole> userRoles = roles.stream().map(role -> new UserRole(savedUser, role))
+				.collect(Collectors.toList());
+		userRoleRepository.saveAll(userRoles);
 
-	        return savedUser;
-	    }
-
-	/**
-	 * Author: Ngô Văn Quốc Thắng 11/05/1996
-	 */
-	  @Transactional
-	    public User updateUserWithRoles(User user, List<Long> roleIds) {
-	        User existingUser = userRepository.findById(user.getId())
-	                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy người dùng có ID: " + user.getId()));
-	        validateUserUpdate(user, existingUser, roleIds);
-	        
-	        existingUser.setEmail(user.getEmail().trim());
-	        existingUser.setUserName(user.getUserName().trim());
-	        existingUser.setPhone(user.getPhone());
-	        existingUser.setAddress(user.getAddress());
-	        existingUser.setStatus(user.getStatus());
-	        existingUser.setUpdatedDate(LocalDate.now());
-	        
-//	        if (user.getPassword() != null && !user.getPassword().isEmpty()) {
-//	            existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
-//	        }
-
-	        userRoleRepository.deleteByUser(existingUser);
-	        List<Role> roles = roleRepository.findAllById(roleIds);
-	        List<UserRole> userRoles = roles.stream()
-	                .map(role -> new UserRole(existingUser, role))
-	                .collect(Collectors.toList());
-	        userRoleRepository.saveAll(userRoles);
-
-	        return userRepository.save(existingUser);
-	    }
-
-	/**
-	 * Author: Ngô Văn Quốc Thắng 11/05/1996  
-	 */
-	private void validateUser(User user, List<Long> roleIds) {
-	    if (user.getUserName() == null || user.getUserName().trim().isEmpty()) {
-	        throw new IllegalArgumentException("Tên người dùng không được để trống");
-	    }
-	    if (user.getPassword() == null || user.getPassword().trim().isEmpty()) {
-	        throw new IllegalArgumentException("Mật khẩu không được để trống");
-	    }
-	    if (user.getEmail() == null || user.getEmail().trim().isEmpty()) {
-	        throw new IllegalArgumentException("Email không được để trống");
-	    }
-
-	    String trimmedEmail = user.getEmail().trim();
-	    Optional<User> existingUser = userRepository.findByEmail(trimmedEmail);
-	    if (existingUser.isPresent()) {
-	        throw new IllegalArgumentException("Email đã tồn tại");
-	    }
-	    user.setEmail(trimmedEmail);
-	    
-	    // Kiểm tra danh sách vai trò
-	    if (roleIds == null || roleIds.isEmpty()) {
-	        throw new IllegalArgumentException("Vui lòng chọn ít nhất một vai trò....");
-	    }
+		return savedUser;
 	}
 
 	/**
 	 * Author: Ngô Văn Quốc Thắng 11/05/1996
 	 */
-	private void validateUserUpdate(User user, User existingUser, List<Long> roleIds) {
+	@Transactional
+	public User updateUserWithRoles(User user, List<Long> roleIds) {
+		User existingUser = userRepository.findById(user.getId())
+				.orElseThrow(() -> new IllegalArgumentException("Không tìm thấy người dùng có ID: " + user.getId()));
+		validateUserUpdate(user, roleIds);
+
+		existingUser.setEmail(user.getEmail().trim());
+		existingUser.setUserName(user.getUserName().trim());
+		existingUser.setPhone(user.getPhone());
+		existingUser.setAddress(user.getAddress());
+		existingUser.setStatus(user.getStatus());
+		existingUser.setUpdatedDate(LocalDate.now());
+
+		userRoleRepository.deleteByUser(existingUser);
+		List<Role> roles = roleRepository.findAllById(roleIds);
+		List<UserRole> userRoles = roles.stream().map(role -> new UserRole(existingUser, role))
+				.collect(Collectors.toList());
+		userRoleRepository.saveAll(userRoles);
+
+		return userRepository.save(existingUser);
+	}
+
+	/**
+	 * Author: Ngô Văn Quốc Thắng 11/05/1996
+	 */
+	private void validateUser(User user, List<Long> roleIds) {
+		if (user.getUserName() == null || user.getUserName().trim().isEmpty()) {
+			throw new IllegalArgumentException("Tên người dùng không được để trống");
+		}
+		if (user.getPassword() == null || user.getPassword().trim().isEmpty()) {
+			throw new IllegalArgumentException("Mật khẩu không được để trống");
+		}
+		if (user.getEmail() == null || user.getEmail().trim().isEmpty()) {
+			throw new IllegalArgumentException("Email không được để trống");
+		}
+
+		String trimmedEmail = user.getEmail().trim();
+		Optional<User> existingUser = userRepository.findByEmail(trimmedEmail);
+		if (existingUser.isPresent()) {
+			throw new IllegalArgumentException("Email đã tồn tại");
+		}
+		user.setEmail(trimmedEmail);
+
+		// Kiểm tra danh sách vai trò
+		if (roleIds == null || roleIds.isEmpty()) {
+			throw new IllegalArgumentException("Vui lòng chọn ít nhất một vai trò....");
+		}
+	}
+
+	/**
+	 * Author: Ngô Văn Quốc Thắng 11/05/1996
+	 */
+	private void validateUserUpdate(User user, List<Long> roleIds) {
 		if (user.getUserName() == null || user.getUserName().trim().isEmpty()) {
 			throw new IllegalArgumentException("Tên người dùng không được để trống");
 		}
 		if (user.getEmail() == null || user.getEmail().trim().isEmpty()) {
 			throw new IllegalArgumentException("Email không được để trống");
 		}
-		
+
 		// Kiểm tra danh sách vai trò
-	    if (roleIds == null || roleIds.isEmpty()) {
-	        throw new IllegalArgumentException("Vui lòng chọn ít nhất một vai trò....");
-	    }
+		if (roleIds == null || roleIds.isEmpty()) {
+			throw new IllegalArgumentException("Vui lòng chọn ít nhất một vai trò....");
+		}
 
 	}
 

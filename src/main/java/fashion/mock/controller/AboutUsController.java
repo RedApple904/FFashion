@@ -24,73 +24,72 @@ import jakarta.servlet.http.HttpSession;
 @Controller
 @RequestMapping("/aboutus")
 public class AboutUsController {
-    private final CategoryService categoryService;
-    private final UserService userService;
 
-    private final ProductService productService;
+	private final CategoryService categoryService;
+	private final UserService userService;
+	private final ProductService productService;
 
-    public AboutUsController(CategoryService categoryService, UserService userService, ProductService productService) {
-        super();
-        this.categoryService = categoryService;
-        this.userService = userService;
-        this.productService = productService;
-    }
+	public AboutUsController(CategoryService categoryService, UserService userService, ProductService productService) {
+		this.categoryService = categoryService;
+		this.userService = userService;
+		this.productService = productService;
+	}
 
-    @GetMapping
-    public String viewAboutUs(Model model, HttpSession session) {
-        // Lấy tất cả danh mục
-        List<Category> categories = categoryService.getAllCategories();
-        // Phân loại danh mục dựa trên tên bắt đầu bằng "Áo" hoặc "Quần"
-        List<Category> aoCategories = categories.stream()
-                .filter(category -> category.getCategoryName().startsWith("Áo")).collect(Collectors.toList());
-        List<Category> quanCategories = categories.stream()
-                .filter(category -> category.getCategoryName().startsWith("Quần")).collect(Collectors.toList());    
-    
-      // Lê Nguyên Minh Quý 27/06/1998
-        List<Product> newProducts = productService.getTop4NewProducts();
+	@GetMapping
+	public String viewAboutUs(Model model, HttpSession session) {
+		// Lấy tất cả danh mục
+		List<Category> categories = categoryService.getAllCategories();
+		// Phân loại danh mục dựa trên tên bắt đầu bằng "Áo" hoặc "Quần"
+		List<Category> aoCategories = categories.stream()
+				.filter(category -> category.getCategoryName().startsWith("Áo")).collect(Collectors.toList());
+		List<Category> quanCategories = categories.stream()
+				.filter(category -> category.getCategoryName().startsWith("Quần")).collect(Collectors.toList());
 
-        Random random = new Random();
-        Category randomCategory = categories.get(random.nextInt(categories.size()));
+		// Lê Nguyên Minh Quý 27/06/1998
+		List<Product> newProducts = productService.getTop4NewProducts();
 
-        // Lấy sản phẩm của danh mục ngẫu nhiên
-        List<Product> randomCategoryProducts = productService.getProductsByCategory(randomCategory.getCategoryName());
+		Random random = new Random();
+		Category randomCategory = categories.get(random.nextInt(categories.size()));
 
-        List<Product> products = productService.getAllProducts();
-        List<Boolean> productsOnDiscount = products.stream().map(productService::isProductOnDiscount)
-                .collect(Collectors.toList());
-        List<Double> discountedPrices = products.stream().map(productService::getDiscountedPrice)
-                .collect(Collectors.toList());
+		// Lấy sản phẩm của danh mục ngẫu nhiên
+		List<Product> randomCategoryProducts = productService.getProductsByCategory(randomCategory.getCategoryName());
 
-        // Thêm danh sách "Áo" và "Quần" vào model
-        model.addAttribute("aoCategories", aoCategories);
-        model.addAttribute("quanCategories", quanCategories);
-        model.addAttribute("newProducts", newProducts);
-        model.addAttribute("products", products);
-        model.addAttribute("productsOnDiscount", productsOnDiscount);
-        model.addAttribute("discountedPrices", discountedPrices);
-        model.addAttribute("randomCategoryProducts", randomCategoryProducts);
-        model.addAttribute("randomCategory", randomCategory);
+		List<Product> products = productService.getAllProducts();
+		List<Boolean> productsOnDiscount = products.stream().map(productService::isProductOnDiscount)
+				.collect(Collectors.toList());
+		List<Double> discountedPrices = products.stream().map(productService::getDiscountedPrice)
+				.collect(Collectors.toList());
 
-        @SuppressWarnings("unchecked")
-        Map<Long, CartItem> cartItemsMap = (Map<Long, CartItem>) session.getAttribute("cartItems");
-        if (cartItemsMap == null) {
-            cartItemsMap = new HashMap<>();
-            session.setAttribute("cartItems", cartItemsMap);
-        }
-        Collection<CartItem> cartItems = cartItemsMap.values();
+		// Thêm danh sách "Áo" và "Quần" vào model
+		model.addAttribute("aoCategories", aoCategories);
+		model.addAttribute("quanCategories", quanCategories);
+		model.addAttribute("newProducts", newProducts);
+		model.addAttribute("products", products);
+		model.addAttribute("productsOnDiscount", productsOnDiscount);
+		model.addAttribute("discountedPrices", discountedPrices);
+		model.addAttribute("randomCategoryProducts", randomCategoryProducts);
+		model.addAttribute("randomCategory", randomCategory);
 
-        User user = (User) session.getAttribute("user");
-        boolean isAdmin = false;
+		@SuppressWarnings("unchecked")
+		Map<Long, CartItem> cartItemsMap = (Map<Long, CartItem>) session.getAttribute("cartItems");
+		if (cartItemsMap == null) {
+			cartItemsMap = new HashMap<>();
+			session.setAttribute("cartItems", cartItemsMap);
+		}
+		Collection<CartItem> cartItems = cartItemsMap.values();
 
-        if (user != null) {
-            isAdmin = userService.isAdmin(user.getId());
-            model.addAttribute("user", user);
-            model.addAttribute("totalCartItems", cartItems.size());
+		User user = (User) session.getAttribute("user");
+		boolean isAdmin = false;
 
-        } else {
-            model.addAttribute("totalCartItems", "0");
-        }
-        model.addAttribute("isAdmin", isAdmin);
-        return "aboutus";
-    }
+		if (user != null) {
+			isAdmin = userService.isAdmin(user.getId());
+			model.addAttribute("user", user);
+			model.addAttribute("totalCartItems", cartItems.size());
+
+		} else {
+			model.addAttribute("totalCartItems", "0");
+		}
+		model.addAttribute("isAdmin", isAdmin);
+		return "aboutus";
+	}
 }

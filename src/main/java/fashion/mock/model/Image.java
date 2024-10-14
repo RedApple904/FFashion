@@ -1,5 +1,6 @@
 package fashion.mock.model;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 import jakarta.persistence.Column;
@@ -13,8 +14,10 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "Image")
-public class Image {
+public class Image implements Serializable {
 
+	private static final long serialVersionUID = 1L;
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;

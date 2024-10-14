@@ -19,7 +19,10 @@
                     <div class="card-body">
                         <p class="font-weight-bold" th:text="${user.userName}"></p>
                         <p class="font-weight-bold" th:text="${user.phone}"></p>
-                        <p th:text="${user.address}"></p>
+               			
+               			<input type="text" id="receiveAddressCard" name="receiveAddressCard" class="form-control" 
+               			th:value="${user.address}" placeholder="Nhập địa chỉ nhận hàng">
+               			
                     </div>
                 </div>
             </div>
@@ -132,6 +135,9 @@
             <input type="hidden" name="shippingMethod" id="shippingMethodInput">
             <input type="hidden" name="paymentMethod" id="paymentMethodInput">
             <input type="hidden" name="totalPrice" id="totalPriceInput">
+            
+            <input type="hidden" id="receiveAddress" name="receiveAddress">
+
             
             <div class="d-flex justify-content-end mt-3">
             	<a href="/shopping-cart/view" class="btn btn-success btn-lg mr-2">Quay lại</a>

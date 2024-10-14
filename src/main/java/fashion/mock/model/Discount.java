@@ -3,6 +3,7 @@
 	 */
 package fashion.mock.model;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 import jakarta.persistence.Column;
@@ -20,7 +21,9 @@ import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "DISCOUNT")
-public class Discount {
+public class Discount implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

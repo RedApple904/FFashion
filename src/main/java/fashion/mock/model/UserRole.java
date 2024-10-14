@@ -5,6 +5,7 @@ package fashion.mock.model;
 
 import java.io.Serializable;
 import java.util.Objects;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
@@ -15,6 +16,7 @@ import jakarta.persistence.Table;
 @Table(name = "USERROLE")
 @IdClass(UserRoleId.class)
 public class UserRole implements Serializable {
+	
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -53,10 +55,12 @@ public class UserRole implements Serializable {
 
 	@Override
 	public boolean equals(Object o) {
-		if (this == o)
+		if (this == o) {
 			return true;
-		if (o == null || getClass() != o.getClass())
+		}
+		if (o == null || getClass() != o.getClass()) {
 			return false;
+		}
 		UserRole userRole = (UserRole) o;
 		return Objects.equals(user, userRole.user) && Objects.equals(role, userRole.role);
 

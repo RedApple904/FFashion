@@ -4,6 +4,7 @@
 
 package fashion.mock.model;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -22,10 +23,14 @@ import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "USERS")
-public class User {
+public class User implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+	
 	@Email(message = "Email phải đúng định dạng.")
 	@NotBlank(message = "Email không được để trống.")
 	@Column(nullable = false, unique = true)
@@ -70,7 +75,6 @@ public class User {
 
 	public User(Long id, String email, String password, String userName, String phone, String address, String status,
 			LocalDate createdDate, LocalDate updatedDate) {
-		super();
 		this.id = id;
 		this.email = email;
 		this.password = password;
@@ -83,7 +87,6 @@ public class User {
 	}
 
 	public User() {
-		super();
 	}
 
 	public Long getId() {

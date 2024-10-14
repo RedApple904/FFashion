@@ -3,11 +3,11 @@
  */
 package fashion.mock.service;
 
-import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.stereotype.Service;
-
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
+
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.stereotype.Service;
 
 @Service
 public class VerificationService {
@@ -22,7 +22,8 @@ public class VerificationService {
 		// Kiểm tra số lần đã gửi mã xác minh trong 5 phút
 		String attemptsKey = email + ":attempts";
 		String attemptCountStr = redisTemplate.opsForValue().get(attemptsKey);
-		// kiểm tra attemptCountStr nếu null thì gán là 0, k null thì ép kiểu thành số nguyên
+		// kiểm tra attemptCountStr nếu null thì gán là 0, k null thì ép kiểu thành số
+		// nguyên
 		int attemptCount = attemptCountStr != null ? Integer.parseInt(attemptCountStr) : 0;
 
 		if (attemptCount >= 3) {
@@ -48,4 +49,3 @@ public class VerificationService {
 		return code.equals(storedCode);
 	}
 }
-

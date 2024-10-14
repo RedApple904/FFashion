@@ -63,6 +63,12 @@ $(document).ready(function() {
         $('#checkoutBtn').prop('disabled', false);  // Enable the checkout button
         $('#paymentWarning').hide();  // Hide payment warning
     });
+    
+    // Before submitting, copy the value from the card address input to the form's hidden input
+    $('#checkoutForm').on('submit', function() {
+        const cardAddress = $('#receiveAddressCard').val();  // Get value from the "card" input
+        $('#receiveAddress').val(cardAddress);  // Set the hidden form input with the value
+    });
 
     // Initial calculation
     formatAllPrices();
